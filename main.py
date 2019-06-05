@@ -1,8 +1,9 @@
 import requests
 import json
-from db import db_init, db_check_group, db_insert_group, db_insert_subs
+from db import DataBase
 import os
 
+database_address = 'social_stat.db'
 
 vk_groups = (
     'rambler',
@@ -37,15 +38,16 @@ def get_vk_subs(group):
 
 
 def main():
-    db_init()
+    db = DataBase(database_address)
+    db.db_init()
 
     for group in vk_groups:
-        group_id = db_check_group(group)
+        group_id = db.db_check_group(group)
         if not group_id:
-            db_insert_group(group)
-            group_id = db_check_group(group)
+            db.db_insert_group(group)
+            group_id = db.db_check_group(group)
         subs_count = get_vk_subs(group)
-        db_insert_subs(group_id, subs_count)
+        db.db_insert_subs(group_id, subs_count)
 
 
 if __name__ == '__main__':
