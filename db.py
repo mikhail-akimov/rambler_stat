@@ -1,27 +1,31 @@
+# -*- coding: utf-8 -*-
+
 import sqlite3
 
 
-class DataBase:
+class StatDataBase:
 
     def __init__(self, db_address):
+        """Init database with specified address."""
         self.conn = sqlite3.connect(db_address)
         self.cursor = self.conn.cursor()
 
     def db_init(self):
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS
+        """Init DB with tables social_group and subs_stat."""
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS
                             social_group(
                                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                                         name text UNIQUE
-                                        )'''
-                       )
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS
+                                        )"""
+                            )
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS
                             subs_stat(
                                     group_id INTEGER,
                                     stat_date datetime default CURRENT_TIMESTAMP,
                                     subs_count INTEGER,
                                     FOREIGN KEY(group_id) REFERENCES social_group(id)
-                                    )'''
-                       )
+                                    )"""
+                            )
         self.conn.commit()
 
     def db_insert_group(self, group_name):
@@ -36,8 +40,8 @@ class DataBase:
         result = self.cursor.fetchone()
         try:
             result = int(result[0])
-        except:
-            pass
+        except Exception:
+            result = 0
         return result
 
     def db_insert_subs(self, group_id, subs_count):

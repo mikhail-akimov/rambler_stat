@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
+
 import requests
-import json
-from db import DataBase
+from db import StatDataBase
 import os
 
 database_address = 'social_stat.db'
@@ -18,6 +19,7 @@ vk_groups = (
 
 
 def get_vk_subs(group):
+    """Return subs_count from VK group by group id. Or 0 if error."""
     token = os.environ.get('VK_TOKEN')
     api_version = '5.95'
     api_url = 'https://api.vk.com/'
@@ -31,14 +33,15 @@ def get_vk_subs(group):
     )
     result = requests.get(url)
     try:
-        subs_count = json.loads(result.text)['response']['count']
+        subs_count = result.json()['response']['count']
     except KeyError:
         subs_count = 0
     return subs_count
 
 
 def main():
-    db = DataBase(database_address)
+    """Get subs count for vk group and insert it into DB."""
+    db = StatDataBase(database_address)
     db.db_init()
 
     for group in vk_groups:
