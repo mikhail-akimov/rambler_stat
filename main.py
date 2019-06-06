@@ -18,12 +18,13 @@ vk_groups = (
 )
 
 
-def get_vk_subs(group):
+def get_vk_subs(group,
+                token=os.environ.get('VK_TOKEN'),
+                api_version='5.95',
+                api_url='https://api.vk.com/',
+                method='groups.getMembers',
+                ):
     """Return subs_count from VK group by group id. Or 0 if error."""
-    token = os.environ.get('VK_TOKEN')
-    api_version = '5.95'
-    api_url = 'https://api.vk.com/'
-    method = 'groups.getMembers'
     url = '{0}method/{1}?group_id={2}&access_token={3}&v={4}'.format(
         api_url,
         method,
